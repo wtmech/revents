@@ -86,10 +86,29 @@ class EventDashboard extends Component {
     })
   }
 
-  handleEditEvent = (eventToUpdate) => () => {
+  handleOpenEvent = (eventToOpen) => () => {
     this.setState({
-      selectedEvent: eventToUpdate,
+      selectedEvent: eventToOpen,
       isOpen: true
+    })
+  }
+
+  handleUpdateEvent = (updatedEvent) => {
+    this.setState({
+      events: this.state.events.map(event => {
+        if (event.id === updatedEvent.id) {
+          return Object.assign({}, updatedEvent)
+        } return event
+      }),
+      isOpen: false,
+      selectedEvent: null
+    })
+  }
+
+  handleDeleteEvent = (eventId) => () => {
+    const updatedEvents = this.state.events.filter(e => e.id !== eventId);
+    this.setState({
+      events: updatedEvents
     })
   }
 
@@ -98,7 +117,7 @@ class EventDashboard extends Component {
     return (
       <Grid>
         <Grid.Column width={10}>
-          <EventList events={events} onEventEdit={this.handleEditEvent} />
+          <EventList events={events} onEventOpen={this.handleOpenEvent} deleteEvent={this.handleDeleteEvent} />
         </Grid.Column>
         <Grid.Column width={6}>
           <Button
@@ -106,7 +125,7 @@ class EventDashboard extends Component {
             content="Create Event"
             onClick={this.handleFormOpen}
           />
-          {isOpen && <EventForm selectedEvent={selectedEvent} handleFormCancel={this.handleFormCancel} createEvent={this.handleCreateEvent} />}
+          {isOpen && <EventForm updateEvent={this.handleUpdateEvent} selectedEvent={selectedEvent} handleFormCancel={this.handleFormCancel} createEvent={this.handleCreateEvent} />}
         </Grid.Column>
       </Grid>
     );
@@ -114,3 +133,23 @@ class EventDashboard extends Component {
 }
 
 export default EventDashboard;
+
+/*
+static getDerivedStateFromProps({selectedEvent}) {
+  if (!selectedEvent) {
+    return {
+      event: defaultEvent,
+    }
+  }
+  return {
+    event: selectedEvent,
+  }
+}
+ 
+componentDidMount() {
+  const { selectedEvent: event } = this.props
+  if (event) {
+    this.setState(() => ({ event }))
+  }
+}
+*/

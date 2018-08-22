@@ -18,13 +18,28 @@ class EventForm extends Component {
     if (this.props.selectedEvent !== null) {
       this.setState({
         event: this.props.selectedEvent
-      })
+      });
     }
+  }
+
+  static getDerivedStateFromProps({ selectedEvent }) {
+    if (!selectedEvent) {
+      return {
+        event: emptyEvent
+      };
+    }
+    return {
+      event: selectedEvent
+    };
   }
 
   onFormSubmit = e => {
     e.preventDefault();
-    this.props.createEvent(this.state.event);
+    if (this.state.event.id) {
+      this.props.updateEvent(this.state.event);
+    } else {
+      this.props.createEvent(this.state.event);
+    }
   };
 
   onInputChange = e => {
